@@ -23,3 +23,16 @@ This repo is public. Tokens, keys and private paths go into environment variable
 
 ## Snapshot caveat
 Cloud environments cache a filesystem snapshot after the setup script runs, so later sessions reuse the old `~/.claude/CLAUDE.md`. Repos that ship `refresh-rules.js` (see `claude-home/.claude/hooks/`) re-fetch the rules at every session start and inject them only when they changed. Elsewhere, edit the setup script (e.g. bump a `# v2` comment) to force a rebuild.
+
+## Phone → PC (Remote Control)
+Use this for local-only work the cloud can't reach (pi-music, the music drive, the Pi, non-GitHub folders). Claude runs **on the PC** with the full local setup, and the phone only shows the session.
+
+1. On the PC, in the folder to work in (e.g. `Documents\projects`):
+   `claude remote-control --name pc-projects`
+   It's a small server: one session is ready immediately, and the phone can open more. Press `w` to switch between same-dir and worktree mode.
+2. On the phone: Claude app → Code → pick **pc-projects**, or use claude.ai/code in a browser.
+3. Reattach later: `claude remote-control --continue` (within about 4 h).
+
+Requirements: the PC stays awake and the command keeps running. Push notifications are on (`agentPushNotifEnabled`), so the phone hears when Claude needs you. Inside a running interactive session, `/remote-control` turns it on for that session only.
+
+**Which one to use:** an idea or anything on GitHub → cloud session (PC can be off). Something only the PC has → Remote Control.
