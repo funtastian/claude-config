@@ -27,6 +27,11 @@ timeout 60 claude plugin list 2>&1 | grep -oE "[A-Za-z0-9._-]+@[A-Za-z0-9._-]+|S
 echo "== user skills dir"
 ls "$C/skills" 2>/dev/null | sed 's/^/  /' || echo "  (none)"
 
+echo "== git in this session"
+echo "  user $(id -un), repo owner $(stat -c %U "$PWD" 2>/dev/null)"
+git -C "$PWD" branch --show-current 2>&1 | head -2 | sed "s/^/  branch: /"
+git -C "$PWD" rev-parse --short HEAD 2>&1 | head -2 | sed "s/^/  HEAD: /"
+
 echo "== hook scripts run directly"
 SC=$(printf '{"cwd":"%s"}' "$PWD" | node "$C/hooks/session-context.js" 2>&1)
 [ -n "$SC" ] && ok "session-context.js prints: $(echo "$SC" | sed -n 2p)" || bad "session-context.js printed nothing for cwd $PWD"

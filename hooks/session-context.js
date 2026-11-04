@@ -6,9 +6,11 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+// safe.directory=*: cloud sessions can hit git's "dubious ownership" check (repo cloned
+// by another user), which would silently empty every result. Read-only commands only.
 const git = (dir, args) => {
   try {
-    return execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 });
+    return execFileSync('git', ['-c', 'safe.directory=*', '-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 });
   } catch { return null; }
 };
 
@@ -20,8 +22,11 @@ process.stdin.on('data', (d) => (raw += d)).on('end', () => {
     if (!dir) dir = process.cwd();
     const out = [];
 
-    const branch = (git(dir, ['branch', '--show-current']) || '').trim();
-    if (branch) {
+    const inRepo = (git(dir, ['rev-parse', '--is-inside-work-tree']) || '').trim() === 'true';
+    // Cloud sessions may check out a detached HEAD: fall back to the short commit id.
+    let branch = inRepo ? (git(dir, ['branch', '--show-current']) || '').trim() : '';
+    if (inRepo && !branch) branch = `(detached at ${(git(dir, ['rev-parse', '--short', 'HEAD']) || '?').trim()})`;
+    if (inRepo) {
       const status = (git(dir, ['status', '--short']) || '').split(/\r?\n/).filter(Boolean);
       const track = (git(dir, ['rev-list', '--left-right', '--count', '@{u}...HEAD']) || '').trim();
       let sync = '';

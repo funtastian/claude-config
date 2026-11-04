@@ -3,7 +3,7 @@
 # global rules, cross-platform hooks, and user-level settings that wire the hooks up.
 # Idempotent and fail-soft: a failed download never blocks the session from starting.
 set -u
-BASE="https://raw.githubusercontent.com/funtastian/claude-config/main"
+BASE="https://raw.githubusercontent.com/funtastian/claude-config/${CLAUDE_CONFIG_REF:-main}"
 C="$HOME/.claude"
 mkdir -p "$C/hooks"
 
