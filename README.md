@@ -14,3 +14,6 @@ Portable, secret-free Claude Code config: one source of truth for the PC and for
 
 ## Rule: no secrets
 This repo is public. Tokens, keys and private paths go into environment variables or cloud network secrets, never here.
+
+## Snapshot caveat
+Cloud environments cache a filesystem snapshot after the setup script runs, so later sessions reuse the old `~/.claude/CLAUDE.md`. Repos that ship `refresh-rules.js` (see `claude-home/.claude/hooks/`) re-fetch the rules at every session start and inject them only when they changed. Elsewhere, edit the setup script (e.g. bump a `# v2` comment) to force a rebuild.
