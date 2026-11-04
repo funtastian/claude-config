@@ -6,6 +6,7 @@ Portable, secret-free Claude Code config: one source of truth for the PC and for
 - `global/CLAUDE.md`: personal global rules. It sits in a subfolder so sessions *inside* this repo don't load it twice.
 - `hooks/guard.js`: PreToolUse guard (denies catastrophic commands, asks before risky git).
 - `hooks/session-context.js`: SessionStart git state + next BACKLOG item.
+- `hooks/prompt-check.js`: cloud-only UserPromptSubmit check. Haiku flags vague prompts with a one-line hint and never blocks.
 - `skills/brief/`: the `/brief` skill (uploaded to the claude.ai account, so it loads everywhere).
 - `cloud/settings.json`: user-level settings for cloud sessions (the hooks above + the ExitPlanMode backlog check).
 - `cloud/setup.sh`: cloud environment setup script. It installs all of the above into `~/.claude`.

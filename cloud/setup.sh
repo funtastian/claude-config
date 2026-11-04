@@ -15,5 +15,6 @@ fetch() { # fetch <repo path> <dest>: atomic, keeps the old file on failure
 fetch global/CLAUDE.md          "$C/CLAUDE.md"
 fetch hooks/guard.js            "$C/hooks/guard.js"
 fetch hooks/session-context.js  "$C/hooks/session-context.js"
+fetch hooks/prompt-check.js     "$C/hooks/prompt-check.js"
 fetch cloud/settings.json       "$C/settings.json"
 exit 0
