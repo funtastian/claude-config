@@ -10,6 +10,7 @@ Portable, secret-free Claude Code config: one source of truth for the PC and for
 - `skills/brief/`: the `/brief` skill (uploaded to the claude.ai account, so it loads everywhere).
 - `cloud/settings.json`: user-level settings for cloud sessions (the hooks above + the ExitPlanMode backlog check).
 - `cloud/setup.sh`: cloud environment setup script. It installs all of the above into `~/.claude`.
+- `cloud/doctor.sh`: read-only check of what a cloud session actually got (rules, hooks, plugins).
 
 ## How it's wired
 - **PC:** `~/.claude/CLAUDE.md` contains one import line pointing at `global/CLAUDE.md` in this checkout, and `~/.claude/settings.json` runs the hooks straight from `hooks/`. Edit here, commit, push.
