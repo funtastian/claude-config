@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# Installs the portable Claude config into a cloud (Claude Code on the web) session.
+# Installs the portable Claude config into a cloud (Claude Code on the web) session:
+# global rules, cross-platform hooks, and user-level settings that wire the hooks up.
 # Idempotent and fail-soft: a failed download never blocks the session from starting.
 set -u
 BASE="https://raw.githubusercontent.com/funtastian/claude-config/main"
-mkdir -p "$HOME/.claude"
-if curl -fsSL "$BASE/global/CLAUDE.md" -o "$HOME/.claude/CLAUDE.md.tmp"; then
-  mv "$HOME/.claude/CLAUDE.md.tmp" "$HOME/.claude/CLAUDE.md"
-  echo "claude-config: installed ~/.claude/CLAUDE.md"
-else
-  rm -f "$HOME/.claude/CLAUDE.md.tmp"
-  echo "claude-config: download failed, continuing without global rules" >&2
-fi
+C="$HOME/.claude"
+mkdir -p "$C/hooks"
+
+fetch() { # fetch <repo path> <dest>: atomic, keeps the old file on failure
+  if curl -fsSL "$BASE/$1" -o "$2.tmp"; then mv "$2.tmp" "$2"; echo "claude-config: installed $2"
+  else rm -f "$2.tmp"; echo "claude-config: could not fetch $1, continuing" >&2; fi
+}
+
+fetch global/CLAUDE.md          "$C/CLAUDE.md"
+fetch hooks/guard.js            "$C/hooks/guard.js"
+fetch hooks/session-context.js  "$C/hooks/session-context.js"
+fetch cloud/settings.json       "$C/settings.json"
 exit 0

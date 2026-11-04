@@ -4,10 +4,13 @@ Portable, secret-free Claude Code config: one source of truth for the PC and for
 
 ## What's here
 - `global/CLAUDE.md`: personal global rules. It sits in a subfolder so sessions *inside* this repo don't load it twice.
-- `cloud/setup.sh`: cloud environment setup script. It installs the rules into `~/.claude` at session start.
+- `hooks/guard.js`: PreToolUse guard (denies catastrophic commands, asks before risky git).
+- `hooks/session-context.js`: SessionStart git state + next BACKLOG item.
+- `cloud/settings.json`: user-level settings for cloud sessions (the hooks above + the ExitPlanMode backlog check).
+- `cloud/setup.sh`: cloud environment setup script. It installs all of the above into `~/.claude`.
 
 ## How it's wired
-- **PC:** `~/.claude/CLAUDE.md` contains one import line pointing at `global/CLAUDE.md` in this checkout. Edit here, commit, push.
+- **PC:** `~/.claude/CLAUDE.md` contains one import line pointing at `global/CLAUDE.md` in this checkout, and `~/.claude/settings.json` runs the hooks straight from `hooks/`. Edit here, commit, push.
 - **Cloud:** the claude.ai/code environment's setup script runs
   `curl -fsSL https://raw.githubusercontent.com/funtastian/claude-config/main/cloud/setup.sh | bash`
   and every new cloud session gets the latest pushed rules.

@@ -1,0 +1,40 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/hooks/session-context.js\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/hooks/guard.js\"",
+            "timeout": 15,
+            "statusMessage": "Checking command safety"
+          }
+        ]
+      },
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You review a plan before it is shown to the user. Hook input JSON: $ARGUMENTS. The plan text is in tool_input.plan. Rule: plans for new features or projects must be a lean backlog: a one-sentence MVP, a short list of small, vertical, independently shippable items (with IDs like B1, B2 and a 'done when' check each), with detailed steps only for the first item, and a note that the items go into BACKLOG.md. Plans for a single small change (a bug fix, a tweak, one file or a few lines) are exempt and always pass. Respond with JSON only: {\"ok\": true} if the plan follows the rule or is exempt; otherwise {\"ok\": false, \"reason\": \"<one sentence on what to change, e.g. split item X, cut scope Y to Later, add BACKLOG.md items>\"}.",
+            "timeout": 30,
+            "statusMessage": "Checking plan is a minimal backlog"
+          }
+        ]
+      }
+    ]
+  }
+}
