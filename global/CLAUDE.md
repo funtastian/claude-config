@@ -8,6 +8,15 @@
 - Keep durable knowledge in files (CLAUDE.md, BACKLOG.md, memory) instead of repeating it in chat.
 - Never skip reading something that's needed to be correct. Lean context means no waste, not guessing.
 
+## Model: recommend the cheapest one that fits
+You can't switch your own model, so recommend it in one line, at a natural break (plan approved, before a long mechanical run, when the task type changes), not mid-step:
+- **Sonnet**: well-specified implementation, routine edits, refactors with tests, docs, config changes.
+- **Haiku**: mechanical or lookup work: renames, formatting, summarising a file, simple factual questions.
+- **Opus**: design decisions, grilling/planning, hard debugging, security, unclear requirements. If you're on Sonnet or Haiku and the task turns into one of these, recommend switching up.
+- For plan-then-build work, `/model opusplan` (Opus while planning, Sonnet while executing) is an option.
+- Say the exact command (`/model sonnet`) and when to switch back. Once per task; don't repeat it after a no; skip it if you're already on the right model, or for a one-off small edit (a switch restarts the prompt cache, so it only pays off over a longer stretch of work).
+- **Subagents**: pick the model per spawn with the Agent tool's `model` parameter, using the same tiers: `haiku` for file searches, page fetches, and log or diff summaries; `sonnet` for well-specified implementation or test runs; `opus` (or omit) for reviews, design, debugging, security, and anything whose result you'll trust without checking. Name the choice in one line when you spawn ("Explore on haiku: file search"). When in doubt, use Opus.
+
 ## Working together: the 4Ds, on both sides
 Anthropic's AI Fluency 4Ds, applied to the user (help them do each one well) and to Claude (make up for its typical failure modes).
 - **Delegation: who does what.**
