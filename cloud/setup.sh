@@ -17,4 +17,10 @@ fetch hooks/guard.js            "$C/hooks/guard.js"
 fetch hooks/session-context.js  "$C/hooks/session-context.js"
 fetch hooks/prompt-check.js     "$C/hooks/prompt-check.js"
 fetch cloud/settings.json       "$C/settings.json"
+
+# Ignore Claude Code worktrees in every repo (idempotent; honours core.excludesFile if set).
+IGN=$(git config --global core.excludesFile 2>/dev/null); IGN="${IGN/#\~/$HOME}"
+[ -n "$IGN" ] || IGN="${XDG_CONFIG_HOME:-$HOME/.config}/git/ignore"
+mkdir -p "$(dirname "$IGN")" && touch "$IGN" && { grep -qxF '.claude/worktrees/' "$IGN" || echo '.claude/worktrees/' >> "$IGN"; } \
+  && echo "claude-config: worktrees ignored via $IGN" || echo "claude-config: could not update $IGN, continuing" >&2
 exit 0
