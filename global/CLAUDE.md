@@ -17,6 +17,14 @@ You can't switch your own model, so recommend it in one line, at a natural break
 - Say the exact command (`/model sonnet`) and when to switch back. Once per task; don't repeat it after a no; skip it if you're already on the right model, or for a one-off small edit (a switch restarts the prompt cache, so it only pays off over a longer stretch of work).
 - **Subagents**: pick the model per spawn with the Agent tool's `model` parameter, using the same tiers: `haiku` for file searches, page fetches, and log or diff summaries; `sonnet` for well-specified implementation or test runs; `opus` (or omit) for reviews, design, debugging, security, and anything whose result you'll trust without checking. Name the choice in one line when you spawn ("Explore on haiku: file search"). When in doubt, use Opus.
 
+## Worktrees: suggest them for parallel or risky work
+In a git repo, suggest a worktree in one line, with the offer, when:
+- two or more independent changes could run as parallel subagents: offer to spawn each with `isolation: "worktree"` (model per the Model rule, usually `sonnet`), so they can't overwrite each other or the user's working tree;
+- one change is risky or experimental (a big refactor, a dependency upgrade, a spike that may be thrown away): offer a worktree subagent, or `EnterWorktree` for the main session;
+- the user wants to keep working in the main tree while a long task runs.
+Don't suggest it for read-only subagents (Explore, research, reviews), single small edits, or non-git folders. Commit first: worktrees don't include uncommitted changes.
+Afterwards: review each worktree's diff, merge or cherry-pick it into the working branch with the user's okay, and remove worktrees you no longer need. Same frequency rule: once per task, don't repeat after a no.
+
 ## Working together: the 4Ds, on both sides
 Anthropic's AI Fluency 4Ds, applied to the user (help them do each one well) and to Claude (make up for its typical failure modes).
 - **Delegation: who does what.**
